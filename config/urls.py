@@ -14,4 +14,5 @@ urlpatterns = [
     path("notifications/", include("user_notifications.urls")),
 path("analytics/", include("analytics_dashboard.urls")),
 path("reports/", include("pdf_reports.urls")),
+path("ai/", include("complaint_classifier.urls")),
 ]

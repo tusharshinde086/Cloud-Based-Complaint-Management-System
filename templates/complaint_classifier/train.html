@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Train Complaint Model{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h1 class="h3 mb-2">Train AI Complaint Classifier</h1>
+  <p class="text-muted">Upload a labelled CSV. The file must include text and category columns by default.</p>
+  <div class="card"><div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+          {% for error in field.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+        </div>
+      {% endfor %}
+      <button class="btn btn-primary" type="submit">Train and save model</button>
+    </form>
+  </div></div>
+  {% if metrics %}
+  <div class="card mt-4"><div class="card-body">
+    <h2 class="h5">Training evaluation</h2>
+    <p><strong>Holdout accuracy:</strong> {{ metrics.accuracy|floatformat:2 }}</p>
+    <p><strong>Labelled rows used:</strong> {{ metrics.samples }}</p>
+    <p class="text-muted">Accuracy is measured on a small holdout set and is not a guarantee of real-world performance.</p>
+  </div></div>
+  {% endif %}
+</div>
+{% endblock %}

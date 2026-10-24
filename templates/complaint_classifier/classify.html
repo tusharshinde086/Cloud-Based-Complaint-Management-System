@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}AI Complaint Classification{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h1 class="h3 mb-2">AI Complaint Classification</h1>
+  <p class="text-muted">Predict a likely category from complaint text. Predictions should be reviewed by staff.</p>
+  <div class="card"><div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label" for="title">Complaint title</label>
+        <input class="form-control" id="title" name="title" maxlength="200" value="{{ title_value }}" placeholder="e.g. Unable to access the portal">
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="description">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="5" placeholder="Describe the issue">{{ description_value }}</textarea>
+      </div>
+      <button class="btn btn-primary" type="submit">Classify complaint</button>
+    </form>
+  </div></div>
+  {% if result %}
+  <div class="card mt-4"><div class="card-body">
+    <h2 class="h5">Prediction result</h2>
+    <p class="mb-1"><strong>Suggested category:</strong> {{ result.category }}</p>
+    <p class="mb-1"><strong>Method:</strong> {{ result.method|title|cut:"_" }}</p>
+    {% if result.confidence != None %}<p class="mb-0"><strong>Model confidence:</strong> {{ result.confidence }}%</p>{% else %}<p class="text-muted mb-0">Confidence is not available for the fallback prediction.</p>{% endif %}
+  </div></div>
+  {% endif %}
+</div>
+{% endblock %}

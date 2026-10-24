@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class ComplaintClassifierConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'complaint_classifier'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "complaint_classifier"
