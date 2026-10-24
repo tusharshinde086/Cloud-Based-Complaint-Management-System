@@ -1,7 +1,20 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-
+MONGODB_URI = os.getenv("MONGODB_URI", "")
+MONGODB_DATABASE = os.getenv(
+    "MONGODB_DATABASE",
+    "complaint_management_cloud"
+)
+CLOUD_SYNC_ENABLED = os.getenv(
+    "CLOUD_SYNC_ENABLED", "False"
+).lower() in ("1", "true", "yes")
+CLOUD_SYNC_BATCH_SIZE = int(
+    os.getenv("CLOUD_SYNC_BATCH_SIZE", "100")
+)
+CLOUD_SYNC_RETRY_SECONDS = int(
+    os.getenv("CLOUD_SYNC_RETRY_SECONDS", "60")
+)
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-change-this-secret")
