@@ -1,0 +1,11 @@
+Django>=5.2,<5.3
+djangorestframework>=3.16,<3.17
+mysqlclient>=2.2.7
+python-dotenv>=1.1
+pymongo>=4.13
+dnspython>=2.7
+reportlab>=4.4
+pandas>=2.2
+scikit-learn>=1.7
+joblib>=1.5
+Pillow>=11.0
