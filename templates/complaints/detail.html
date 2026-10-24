@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ complaint.complaint_id }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between gap-2 mb-3"><div><h1 class="h2">{{ complaint.title }}</h1><p class="text-secondary mb-0">{{ complaint.complaint_id }} · Submitted {{ complaint.created_at|date:"d M Y, H:i" }}</p></div><a class="btn btn-outline-secondary align-self-start" href="{% url 'complaint_list' %}">Back to list</a></div>
+<div class="row g-3">
+<div class="col-lg-8"><div class="card mb-3"><div class="card-body">
+<div class="d-flex flex-wrap gap-2 mb-3"><span class="badge text-bg-primary">{{ complaint.get_status_display }}</span><span class="badge text-bg-secondary">{{ complaint.get_category_display }}</span><span class="badge text-bg-warning">{{ complaint.get_priority_display }}</span></div>
+<h2 class="h5">Description</h2><p class="text-break">{{ complaint.description|linebreaksbr }}</p>
+{% if complaint.attachment %}<p><a href="{{ complaint.attachment.url }}">View attachment</a></p>{% endif %}
+{% if complaint.resolution_note %}<hr><h2 class="h5">Resolution note</h2><p>{{ complaint.resolution_note|linebreaksbr }}</p>{% endif %}
+{% if can_edit %}<a class="btn btn-outline-primary" href="{% url 'complaint_edit' complaint.pk %}">Edit pending complaint</a>{% endif %}
+</div></div>
+<div class="card"><div class="card-header">Complaint history</div><div class="card-body">
+{% for h in history %}<div class="history-item mb-3"><div class="fw-semibold">{% if h.old_status %}{{ h.old_status }} → {% endif %}{{ h.new_status|default:"Updated" }}</div><div>{{ h.remarks|default:"No remarks" }}</div><div class="text-secondary small">{{ h.actor.username|default:"System" }} · {{ h.created_at|date:"d M Y, H:i" }}</div></div>{% empty %}<p class="text-secondary mb-0">No history recorded.</p>{% endfor %}
+</div></div></div>
+<div class="col-lg-4"><div class="card mb-3"><div class="card-header">Details</div><div class="card-body"><p><strong>Submitted by:</strong> {{ complaint.created_by.username }}</p><p><strong>Assigned to:</strong> {{ complaint.assigned_to.username|default:"Unassigned" }}</p><p><strong>Last updated:</strong> {{ complaint.updated_at|date:"d M Y, H:i" }}</p></div></div>
+{% if can_manage %}<div class="card mb-3"><div class="card-header">Assign staff</div><div class="card-body"><form method="post" action="{% url 'complaint_assign' complaint.pk %}">{% csrf_token %}<label class="form-label" for="assigned_to">Staff user ID</label><input class="form-control mb-3" id="assigned_to" name="assigned_to" type="number" required><button class="btn btn-primary w-100">Assign</button></form><div class="form-text">Enter the numeric user ID of an active Staff/Admin account.</div></div></div>
+<div class="card"><div class="card-header">Update status</div><div class="card-body"><form method="post" action="{% url 'complaint_change_status' complaint.pk %}">{% csrf_token %}<label class="form-label" for="status">New status</label><select class="form-select mb-3" id="status" name="status">{% for v,l in complaint.Status.choices %}<option value="{{ v }}" {% if complaint.status == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select><label class="form-label" for="remarks">Remarks / resolution note</label><textarea class="form-control mb-3" id="remarks" name="remarks" rows="3"></textarea><button class="btn btn-primary w-100">Update status</button></form></div></div>{% endif %}
+</div></div>
+{% endblock %}
