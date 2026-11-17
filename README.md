@@ -39,13 +39,45 @@ pip install -r requirements.txt
 Copy-Item .env.example .env
 ```
 
+# 1. Enter the project folder
+cd "C:\Users\Lenovo\Downloads\cms\Cloud-Based-Complaint-Management-System"
+
+# 2. Delete the copied old virtual environment
+if (Test-Path .venv) {
+    Remove-Item .venv -Recurse -Force
+}
+
+# 3. Create and activate a new virtual environment
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+# 4. Install dependencies
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+
+# 5. Verify configuration and prepare the database
+python manage.py check
+python manage.py migrate
+
+# 6. Create an admin account if this is a fresh database
+python manage.py createsuperuser
+
+# 7. Run tests and check MongoDB
+python manage.py test
+python manage.py check_mongodb
+python manage.py cloud_sync_status
+
+
+# 8. Start the website
+python manage.py runserver
+
 If activation is blocked, run in the current terminal:
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\.venv\Scripts\Activate.ps1
 ```
 
-If Python 3.12 is not installed, use an installed supported version by changing `py -3.12` accordingly. We will verify package compatibility during setup.
+
 
 ## MySQL database
 Connect to MySQL as an administrator and run this SQL. Replace the sample password with your own strong password:
@@ -57,22 +89,8 @@ GRANT ALL PRIVILEGES ON complaint_management.* TO 'complaint_app'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-Use the same database credentials in `.env`. Do not commit `.env` to Git.
 
-## Git
-```powershell
-git init
-git add .
-git status
-git commit -m "Initial project setup"
-```
 
-If Git identity is not configured:
-```powershell
-git config --global user.name "Your Name"
-git config --global user.email "you@example.com"
-```
-Replace with your own details. Never commit passwords or connection strings.
 
 ## Implementation parts
 - Part 1: setup, virtual environment, dependencies, environment variables, Git
@@ -84,5 +102,3 @@ Replace with your own details. Never commit passwords or connection strings.
 - Part 7: MongoDB Atlas cloud sync, durable MySQL sync queue, retries and logs
 - Part 8: complete responsive frontend
 - Part 9: automated tests, terminal verification, documentation and Git cleanup
-
-Parts can be delivered as separate ZIPs and/or chat messages if code does not fit in one message. All parts must use the same structure. Do not replace newer files with older versions.
